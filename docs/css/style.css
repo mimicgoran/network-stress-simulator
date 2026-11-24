@@ -1,0 +1,158 @@
+/* Belgrade Urban Network Simulator - osnovni izgled */
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --text: #1f2933;
+  --muted: #6b7785;
+  --line: #e4e7eb;
+  --accent: #2563eb;
+  --panel-w: 340px;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* "hidden" mora da pobedi display: grid/flex */
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); }
+body { display: flex; }
+
+/* ---------- levi panel ---------- */
+#panel {
+  width: var(--panel-w);
+  flex: 0 0 var(--panel-w);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 1000;
+}
+.eyebrow { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-size: 20px; line-height: 1.25; margin: 6px 0 6px; }
+.subtitle { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 8px; }
+
+.stats { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0; font-size: 13px; }
+.stats dt { color: var(--muted); }
+.stats dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+.inspector { font-size: 13px; line-height: 1.5; }
+.inspector .title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.muted { color: var(--muted); }
+.tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: #eef2ff; color: #3730a3; margin-right: 4px; }
+.tag.warn { background: #fff7ed; color: #9a3412; }
+
+/* dugmad */
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--text);
+  background: #fff; border: 1px solid #cbd2d9; border-radius: 8px; padding: 8px 10px; cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+.btn:hover { background: #f3f4f6; }
+.btn.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37, 99, 235, .18); background: #eff6ff; }
+.btn-ghost { width: 100%; margin-top: 10px; font-weight: 500; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot-start { background: #16a34a; }
+.dot-end { background: #dc2626; }
+
+/* statusna poruka */
+.status { font-size: 12.5px; line-height: 1.45; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+.status.info { background: #f1f5f9; color: #334155; }
+.status.ok { background: #ecfdf5; color: #065f46; }
+.status.error { background: #fef2f2; color: #991b1b; }
+.status code { font-size: 11px; }
+
+/* markeri A/B */
+.pin {
+  width: 28px; height: 28px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .35); cursor: grab;
+}
+.pin-start { background: #16a34a; }
+.pin-end { background: #dc2626; }
+#map.picking { cursor: crosshair; }
+#map.picking .leaflet-interactive { cursor: crosshair; }
+#map.closing { cursor: default; }
+
+/* zatvaranje ulica */
+.btn-closure { width: 100%; }
+.btn-closure.active { border-color: #b91c1c; background: #fef2f2; color: #991b1b; box-shadow: 0 0 0 2px rgba(185, 28, 28, .18); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-row .btn-ghost { margin-top: 0; }
+.mode-banner { margin-top: 10px; font-size: 12.5px; line-height: 1.45; padding: 8px 10px; border-radius: 8px; background: #fef2f2; color: #991b1b; }
+.closure-details { margin: 10px 0; }
+.closure-count { font-size: 13px; font-weight: 600; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; }
+.closure-count::-webkit-details-marker { display: none; }
+.closure-count::after { content: "▸"; color: var(--muted); font-size: 11px; transition: transform .15s; }
+.closure-details[open] .closure-count::after { transform: rotate(90deg); }
+.closure-details.empty .closure-count { cursor: default; pointer-events: none; font-weight: 500; color: var(--muted); }
+.closure-details.empty .closure-count::after { content: none; }
+.closure-list { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--muted); }
+.closure-list:empty { display: none; }
+.closure-icon {
+  width: 20px; height: 20px; border-radius: 50%; background: #dc2626; color: #fff; border: 2px solid #fff;
+  font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+}
+.tag.closed { background: #fee2e2; color: #991b1b; }
+
+/* kratak red sa rutom + dugme ⓘ */
+.route-summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13.5px; }
+.route-summary .neg, .neg { color: #b91c1c; }
+.info-btn {
+  font: inherit; font-size: 12px; color: var(--accent); background: none; border: 1px solid #bfdbfe;
+  border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap;
+}
+.info-btn:hover { background: #eff6ff; }
+.route-details { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+
+/* oblacic sa podacima o ulici */
+.pop { font-family: inherit; min-width: 170px; }
+.pop-title { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+.pop-tags { margin-bottom: 5px; }
+.pop-meta { font-size: 12px; color: var(--muted); }
+.leaflet-popup-content { margin: 10px 14px; }
+
+/* izbor prikaza mreze: Streets | Flow */
+.seg-control { display: grid; grid-template-columns: repeat(2, 1fr); background: #f1f5f9; border-radius: 8px; padding: 3px; margin-bottom: 10px; }
+.seg-btn { font: inherit; font-size: 12.5px; font-weight: 600; color: var(--muted); background: none; border: 0; border-radius: 6px; padding: 6px 4px; cursor: pointer; }
+.seg-btn.active { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+.stats dd.note { grid-column: 1 / -1; text-align: left; font-weight: 400; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+.pos { color: #15803d; }
+.pop-load { font-size: 12px; margin-top: 5px; padding-top: 5px; border-top: 1px solid var(--line); }
+
+/* "About the data & model" - sklopljeno */
+.about { margin-bottom: 8px; }
+.about summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 12px; }
+.about .stats { margin: 8px 0; font-size: 12px; }
+.about p { margin: 0 0 6px; }
+.status.warn { background: #fffbeb; color: #92400e; }
+.stats dd.neg { color: #b91c1c; }
+
+.panel-footer { margin-top: auto; font-size: 11px; color: var(--muted); line-height: 1.5; }
+.panel-footer a { color: inherit; }
+
+/* ---------- mapa ---------- */
+#map { flex: 1 1 auto; height: 100%; }
+/* smirena (siva) OSM podloga da mreza i rute dodju do izrazaja */
+.leaflet-tile-pane { filter: grayscale(1) brightness(1.06) contrast(.85); opacity: .75; }
+
+.dir-arrow {
+  color: #ea580c; font-size: 18px; line-height: 18px; text-align: center;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+}
+
+/* ---------- telefon: panel ispod mape ---------- */
+@media (max-width: 760px) {
+  body { flex-direction: column-reverse; }
+  #map { height: 60vh; flex: 0 0 60vh; }
+  #panel { width: 100%; flex: 1 1 auto; height: auto; border-right: 0; border-top: 1px solid var(--line); padding: 14px; gap: 10px; }
+  .eyebrow, .subtitle { display: none; }      /* na telefonu stedimo prostor */
+  h1 { font-size: 16px; margin: 0; }
+}

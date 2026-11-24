@@ -1,0 +1,8 @@
+# Belgrade Urban Network Simulator - Python deo (samo priprema podataka)
+# Zahteva Python 3.12 ili noviji (OSMnx 2.2 ne podrzava starije verzije).
+# Testirano zajedno na Python 3.12, 3.13 i 3.14 (novembar 2026).
+# Izuzetak: Python 3.14.1 ne moze (networkx 3.7 ga iskljucuje).
+osmnx==2.2.0
+networkx==3.7
+geopandas==1.2.0
+shapely==2.2.0

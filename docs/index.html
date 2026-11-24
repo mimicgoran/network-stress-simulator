@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Network Stress Simulator</title>
+  <meta name="description" content="Network Stress Simulator – GIS simulation of how a single disruption spreads through an entire network.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/style.css?v=20261125a">
+</head>
+<body>
+  <aside id="panel">
+    <header class="panel-header">
+      <h1>Network Stress Simulator</h1>
+      <p class="subtitle">GIS simulation of how a single disruption spreads through an entire network.</p>
+    </header>
+
+    <section class="card">
+      <h2>Route</h2>
+      <div class="btn-row">
+        <button id="btn-start" class="btn"><span class="dot dot-start"></span>Start</button>
+        <button id="btn-end" class="btn"><span class="dot dot-end"></span>Destination</button>
+      </div>
+      <div id="route-status" class="status info">Loading street network…</div>
+      <div id="route-summary" class="route-summary" hidden>
+        <span id="route-summary-text"></span>
+        <button id="btn-route-info" class="info-btn" aria-expanded="false" aria-controls="route-details" hidden>ⓘ Details</button>
+      </div>
+      <dl class="stats route-details" id="route-details" hidden></dl>
+      <button id="btn-clear" class="btn btn-ghost">Clear route</button>
+    </section>
+
+    <section class="card">
+      <h2>Road closures</h2>
+      <button id="btn-closure" class="btn btn-closure">Close streets</button>
+      <div id="mode-banner" class="mode-banner" hidden></div>
+      <details id="closure-details" class="closure-details empty">
+        <summary id="closure-count" class="closure-count">No streets closed.</summary>
+        <ul id="closure-list" class="closure-list"></ul>
+      </details>
+      <div class="btn-row">
+        <button id="btn-clear-closures" class="btn btn-ghost" disabled>Clear closures</button>
+        <button id="btn-reset" class="btn btn-ghost">Reset scenario</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Network impact</h2>
+      <div class="seg-control" role="group" aria-label="Map view">
+        <button class="seg-btn active" data-view="streets">Streets</button>
+        <button class="seg-btn" data-view="flow">Flow</button>
+      </div>
+      <div class="route-summary">
+        <span id="impact-summary-text" class="muted">Loading…</span>
+        <button id="btn-impact-info" class="info-btn" aria-expanded="false" aria-controls="impact-details">ⓘ Details</button>
+      </div>
+      <dl class="stats route-details" id="impact-details" hidden></dl>
+    </section>
+
+    <footer class="panel-footer">
+      <details class="about">
+        <summary>About the data &amp; model</summary>
+        <dl class="stats" id="net-stats"></dl>
+        <p>Routes are computed on a directed street graph that respects one-way streets,
+           OSM turn restrictions and a no-U-turn rule at intersections.</p>
+        <p>Travel time = driving at 85% of the speed limit + a delay at every junction
+           (3–10 s without traffic lights, 15–25 s with traffic lights, depending on
+           straight / right / left). This gives about 21 km/h on average – an estimate
+           for typical daytime conditions, not real-time traffic.</p>
+        <p>Network load: 1,000 synthetic trips between random points in Vračar (fixed random
+           seed) are routed with the same model. “Flow” is the number of simulated trips using
+           a street – not a vehicle count. After a closure only the affected trips are re-routed;
+           trips with no remaining route are reported separately.</p>
+      </details>
+      Street data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL).
+      Simulated results only – not real traffic data.
+    </footer>
+  </aside>
+
+  <main id="map" aria-label="Map of Vračar street network"></main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/network.js?v=20261125a"></script>
+  <script src="js/router.js?v=20261125a"></script>
+  <script src="js/simulation.js?v=20261125a"></script>
+  <script src="js/app.js?v=20261125a"></script>
+</body>
+</html>

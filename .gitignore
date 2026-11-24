@@ -1,0 +1,18 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# PyCharm / IDE
+.idea/
+.vscode/
+
+# OSMnx kes i sirovi podaci (mogu se ponovo generisati skriptama)
+cache/
+data/raw/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
